@@ -19,22 +19,22 @@ glab ci trigger <job-id> [flags]
 
 ## Examples
 
-```plaintext
-$ glab ci trigger
+```console
 # Interactively select a job to trigger
+$ glab ci trigger
 
-$ glab ci trigger 224356863
 # Trigger manual job with id 224356863
+$ glab ci trigger 224356863
 
-$ glab ci trigger lint
 # Trigger manual job with name lint
+$ glab ci trigger lint
 
 ```
 
 ## Options
 
 ```plaintext
-  -b, --branch string     The branch to search for the job. Default: current branch.
+  -b, --branch string     The branch to search for the job. (default current branch)
   -p, --pipeline-id int   The pipeline ID to search for the job.
 ```
 

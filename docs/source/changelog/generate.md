@@ -19,8 +19,9 @@ glab changelog generate [flags]
 
 ## Examples
 
-```plaintext
-glab changelog generate
+```console
+# Generate a changelog
+$ glab changelog generate
 
 ```
 

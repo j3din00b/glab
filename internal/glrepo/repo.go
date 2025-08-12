@@ -4,16 +4,17 @@ import (
 	"errors"
 	"fmt"
 	"net/url"
+	"slices"
 	"strings"
 
-	"gitlab.com/gitlab-org/cli/api"
+	"gitlab.com/gitlab-org/cli/internal/api"
 
 	"gitlab.com/gitlab-org/cli/internal/config"
 
 	gitlab "gitlab.com/gitlab-org/api/client-go"
-	"gitlab.com/gitlab-org/cli/pkg/git"
-	"gitlab.com/gitlab-org/cli/pkg/glinstance"
-	"gitlab.com/gitlab-org/cli/pkg/utils"
+	"gitlab.com/gitlab-org/cli/internal/git"
+	"gitlab.com/gitlab-org/cli/internal/glinstance"
+	"gitlab.com/gitlab-org/cli/internal/utils"
 )
 
 // RemoteURL returns correct git clone URL of a repo
@@ -66,15 +67,15 @@ type Interface interface {
 }
 
 // New instantiates a GitLab repository from owner and repo name arguments
-func New(owner, repo string) Interface {
-	return NewWithHost(owner, repo, glinstance.OverridableDefault())
+func New(owner, repo, defaultHostname string) Interface {
+	return NewWithHost(owner, repo, defaultHostname)
 }
 
 // NewWithGroup instantiates a GitLab repository from group, namespace and repo name arguments
-func NewWithGroup(group, namespace, repo, hostname string) Interface {
+func NewWithGroup(group, namespace, repo, hostname, defaultHostname string) Interface {
 	owner := fmt.Sprintf("%s/%s", group, namespace)
 	if hostname == "" {
-		return New(owner, repo)
+		return New(owner, repo, defaultHostname)
 	}
 	return NewWithHost(owner, repo, hostname)
 }
@@ -98,7 +99,7 @@ func NewWithHost(owner, repo, hostname string) Interface {
 
 // FromFullName extracts the GitLab repository information from the following
 // formats: "OWNER/REPO", "HOST/OWNER/REPO", "HOST/GROUP/NAMESPACE/REPO", and a full URL.
-func FromFullName(nwo string) (Interface, error) {
+func FromFullName(nwo string, defaultHostname string) (Interface, error) {
 	nwo = strings.TrimSpace(nwo)
 	// check if it's a valid git URL and parse it
 	if git.IsValidURL(nwo) {
@@ -106,12 +107,12 @@ func FromFullName(nwo string) (Interface, error) {
 		if err != nil {
 			return nil, err
 		}
-		return FromURL(u)
+		return FromURL(u, defaultHostname)
 	}
 	// check if it is valid URL and parse it
 	if utils.IsValidURL(nwo) {
 		u, _ := url.Parse(nwo)
-		return FromURL(u)
+		return FromURL(u, defaultHostname)
 	}
 
 	repo := nwo[strings.LastIndex(nwo, "/")+1:]
@@ -121,16 +122,14 @@ func FromFullName(nwo string) (Interface, error) {
 	if repo == "" {
 		return nil, fmt.Errorf(`expected the "[HOST/]OWNER/[NAMESPACE/]REPO" format, got %q`, nwo)
 	}
-	for _, p := range parts {
-		if p == "" {
-			return nil, fmt.Errorf(`expected the "[HOST/]OWNER/[NAMESPACE/]REPO" format, got %q`, nwo)
-		}
+	if slices.Contains(parts, "") {
+		return nil, fmt.Errorf(`expected the "[HOST/]OWNER/[NAMESPACE/]REPO" format, got %q`, nwo)
 	}
 	switch len(parts) {
 	case 2: // GROUP/NAMESPACE/REPO or HOST/OWNER/REPO or //HOST/GROUP/NAMESPACE/REPO
 		// First, checks if the first part matches the default instance host (i.e. gitlab.com) or the
 		// overridden default host (mostly from the GITLAB_HOST env variable)
-		if parts[0] == glinstance.Default() || parts[0] == glinstance.OverridableDefault() {
+		if parts[0] == glinstance.DefaultHostname || parts[0] == defaultHostname {
 			return NewWithHost(parts[1], repo, normalizeHostname(parts[0])), nil
 		}
 		// Dots (.) are allowed in group names by GitLab.
@@ -143,11 +142,8 @@ func FromFullName(nwo string) (Interface, error) {
 			cfg, err := config.Init()
 			if err == nil {
 				hosts, _ := cfg.Hosts()
-				for _, host := range hosts {
-					if host == parts[0] {
-						rI = NewWithHost(parts[1], repo, normalizeHostname(parts[0]))
-						break
-					}
+				if slices.Contains(hosts, parts[0]) {
+					rI = NewWithHost(parts[1], repo, normalizeHostname(parts[0]))
 				}
 				if rI != nil {
 					return rI, nil
@@ -157,16 +153,16 @@ func FromFullName(nwo string) (Interface, error) {
 		// if the first part is not a valid URL, and does not match an
 		// authenticated hostname then we assume it is in
 		// the format GROUP/NAMESPACE/REPO
-		return NewWithGroup(parts[0], parts[1], repo, ""), nil
+		return NewWithGroup(parts[0], parts[1], repo, "", defaultHostname), nil
 	case 1: // OWNER/REPO
-		return New(parts[0], repo), nil
+		return New(parts[0], repo, defaultHostname), nil
 	default:
 		return nil, fmt.Errorf(`expected the "[HOST/]OWNER/[NAMESPACE/]REPO" format, got %q`, nwo)
 	}
 }
 
 // FromURL extracts the GitLab repository information from a git remote URL
-func FromURL(u *url.URL) (Interface, error) {
+func FromURL(u *url.URL, defaultHostname string) (Interface, error) {
 	if u.Hostname() == "" {
 		return nil, fmt.Errorf("no hostname detected")
 	}
@@ -208,7 +204,7 @@ func FromURL(u *url.URL) (Interface, error) {
 		}
 
 		if len(parts) == 2 {
-			return NewWithGroup(parts[0], parts[1], repo, u.Hostname()), nil
+			return NewWithGroup(parts[0], parts[1], repo, u.Hostname(), defaultHostname), nil
 		}
 	}
 	return nil, fmt.Errorf("invalid path: %s", u.Path)

@@ -25,11 +25,11 @@ ls
 
 ## Examples
 
-```plaintext
-glab incident list --all
-glab incident ls --all
-glab incident list --assignee=@me
-glab incident list --milestone release-2.0.0 --opened
+```console
+$ glab incident list --all
+$ glab incident ls --all
+$ glab incident list --assignee=@me
+$ glab incident list --milestone release-2.0.0 --opened
 
 ```
 
@@ -41,12 +41,13 @@ glab incident list --milestone release-2.0.0 --opened
       --author string          Filter incident by author <username>.
   -c, --closed                 Get only closed incidents.
   -C, --confidential           Filter by confidential incidents.
+  -e, --epic int               List issues belonging to a given epic (requires --group, no pagination support).
   -g, --group string           Select a group or subgroup. Ignored if a repo argument is set.
       --in string              search in: title, description. (default "title,description")
   -l, --label strings          Filter incident by label <name>.
   -m, --milestone string       Filter incident by milestone <id>.
-      --not-assignee strings   Filter incident by not being assigneed to <username>.
-      --not-author strings     Filter by not being by author(s) <username>.
+      --not-assignee string    Filter incident by not being assigned to <username>.
+      --not-author string      Filter incident by not being by author(s) <username>.
       --not-label strings      Filter incident by lack of label <name>.
   -O, --output string          Options: 'text' or 'json'. (default "text")
   -F, --output-format string   Options: 'details', 'ids', 'urls'. (default "details")

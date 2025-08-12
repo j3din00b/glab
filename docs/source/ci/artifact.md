@@ -25,9 +25,10 @@ push
 
 ## Examples
 
-```plaintext
-glab ci artifact main build
-glab ci artifact main deploy --path="artifacts/"
+```console
+# Download all artifacts from the main branch and build job
+$ glab ci artifact main build
+$ glab ci artifact main deploy --path="artifacts/"
 
 ```
 

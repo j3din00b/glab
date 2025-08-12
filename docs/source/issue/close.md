@@ -19,9 +19,9 @@ glab issue close [<id> | <url>] [flags]
 
 ## Examples
 
-```plaintext
-glab issue close 123
-glab issue close https://gitlab.com/NAMESPACE/REPO/-/issues/123
+```console
+$ glab issue close 123
+$ glab issue close https://gitlab.com/NAMESPACE/REPO/-/issues/123
 
 ```
 

@@ -33,11 +33,18 @@ glab ci ci view [branch/tag] [flags]
 
 ## Examples
 
-```plaintext
-glab pipeline ci view   # Uses current branch
-glab pipeline ci view master  # Get latest pipeline on master branch
-glab pipeline ci view -b master  # just like the second example
-glab pipeline ci view -b master -R profclems/glab  # Get latest pipeline on master branch of profclems/glab repo
+```console
+# Uses current branch
+$ glab pipeline ci view
+
+# Get latest pipeline on master branch
+$ glab pipeline ci view master
+
+# just like the second example
+$ glab pipeline ci view -b master
+
+# Get latest pipeline on master branch of profclems/glab repo
+$ glab pipeline ci view -b master -R profclems/glab
 
 ```
 

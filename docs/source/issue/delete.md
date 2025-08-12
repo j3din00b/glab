@@ -25,10 +25,10 @@ del
 
 ## Examples
 
-```plaintext
-glab issue delete 123
-glab issue del 123
-glab issue delete https://gitlab.com/profclems/glab/-/issues/123
+```console
+$ glab issue delete 123
+$ glab issue del 123
+$ glab issue delete https://gitlab.com/profclems/glab/-/issues/123
 
 ```
 

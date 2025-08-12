@@ -15,11 +15,11 @@ Work with GitLab issues.
 
 ## Examples
 
-```plaintext
-glab issue list
-glab issue create --label --confidential
-glab issue view --web 123
-glab issue note -m "closing because !123 was merged" <issue number>
+```console
+$ glab issue list
+$ glab issue create --label --confidential
+$ glab issue view --web 123
+$ glab issue note -m "closing because !123 was merged" <issue number>
 
 ```
 

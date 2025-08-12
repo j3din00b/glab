@@ -35,6 +35,8 @@ project
 - [`fork`](fork.md)
 - [`list`](list.md)
 - [`mirror`](mirror.md)
+- [`publish`](publish/index.md)
 - [`search`](search.md)
 - [`transfer`](transfer.md)
+- [`update`](update.md)
 - [`view`](view.md)

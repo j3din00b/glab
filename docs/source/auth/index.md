@@ -21,6 +21,10 @@ Manage glab's authentication state.
 
 ## Subcommands
 
+- [`configure-docker`](configure-docker.md)
+- [`docker-helper`](docker-helper.md)
+- [`dpop-gen`](dpop-gen.md)
 - [`git-credential`](git-credential.md)
 - [`login`](login.md)
+- [`logout`](logout.md)
 - [`status`](status.md)

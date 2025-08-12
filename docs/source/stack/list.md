@@ -19,7 +19,7 @@ Lists all entries in the stack. To select a different revision, use a command li
 
 This feature is experimental. It might be broken or removed without any prior notice.
 Read more about what experimental features mean at
-<https://docs.gitlab.com/ee/policy/experiment-beta-support.html>
+<https://docs.gitlab.com/policy/development_stages_support/>
 
 Use experimental features at your own risk.
 
@@ -35,8 +35,9 @@ ls
 
 ## Examples
 
-```plaintext
-glab stack list
+```console
+$ glab stack list
+
 ```
 
 ## Options inherited from parent commands

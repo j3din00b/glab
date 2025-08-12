@@ -19,12 +19,10 @@ glab ci config compile [flags]
 
 ## Examples
 
-```plaintext
+```console
 # Uses .gitlab-ci.yml in the current directory
 $ glab ci config compile
-
 $ glab ci config compile .gitlab-ci.yml
-
 $ glab ci config compile path/to/.gitlab-ci.yml
 
 ```

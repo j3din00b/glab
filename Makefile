@@ -2,7 +2,6 @@ OS = $(shell uname | tr A-Z a-z)
 DEBUG ?= false
 export PATH := $(abspath bin/):${PATH}
 
-
 # Build variables
 export CGO_ENABLED ?= 0
 ifeq (${VERBOSE}, 1)
@@ -12,13 +11,8 @@ endif
 TEST_FORMAT = short-verbose
 endif
 
-GLAB_VERSION ?= $(shell git describe --tags 2>/dev/null || git rev-parse --short HEAD)
-DATE_FMT = +%Y-%m-%d
-ifdef SOURCE_DATE_EPOCH
-    BUILD_DATE ?= $(shell date -u -d "@$(SOURCE_DATE_EPOCH)" "$(DATE_FMT)" 2>/dev/null || date -u -r "$(SOURCE_DATE_EPOCH)" "$(DATE_FMT)" 2>/dev/null || date -u "$(DATE_FMT)")
-else
-    BUILD_DATE ?= $(shell date "$(DATE_FMT)")
-endif
+GLAB_VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)
+BUILD_COMMIT_SHA ?= $(shell git rev-parse --short HEAD)
 
 ifndef CGO_CPPFLAGS
     export CGO_CPPFLAGS := $(CPPFLAGS)
@@ -45,14 +39,14 @@ else
     GOLINT=bin/golangci-lint
 endif
 
-GO_LDFLAGS := -X main.buildDate=$(BUILD_DATE) $(GO_LDFLAGS)
+GO_LDFLAGS := -X main.commit=$(BUILD_COMMIT_SHA) $(GO_LDFLAGS)
 GO_LDFLAGS := $(GO_LDFLAGS) -X main.version=$(GLAB_VERSION)
 GOURL ?= gitlab.com/gitlab-org/cli
 BUILDLOC ?= ./bin/glab
 
 # Dependency versions
 GOTESTSUM_VERSION = 0.6.0
-GOLANGCI_VERSION = 1.32.2
+GOLANGCI_LINT_VERSION = 2.1.6
 
 # Add the ability to override some variables
 # Use with care
@@ -61,7 +55,7 @@ GOLANGCI_VERSION = 1.32.2
 .PHONY: build
 .DEFAULT_GOAL := build
 build:
-	go build -trimpath -ldflags "$(GO_LDFLAGS) -X main.debugMode=$(DEBUG)" -o $(BUILDLOC) $(GOURL)/cmd/glab
+	go build -trimpath -ldflags "$(GO_LDFLAGS) -X main.debugMode=$(DEBUG) -w -s" -o $(BUILDLOC) $(GOURL)/cmd/glab
 
 clean: ## Clear the working area and the project
 	rm -rf ./bin ./.glab-cli ./test/testdata-* ./coverage.txt coverage-*
@@ -69,7 +63,7 @@ clean: ## Clear the working area and the project
 
 .PHONY: install
 install: ## Install glab in $GOPATH/bin
-	GO111MODULE=on go install -trimpath -ldflags "$(GO_LDFLAGS) -X main.debugMode=$(DEBUG)" $(GOURL)/cmd/glab
+	GO111MODULE=on go install -trimpath -ldflags "$(GO_LDFLAGS) -X main.debugMode=$(DEBUG) -w -s" $(GOURL)/cmd/glab
 
 .PHONY: run
 run:
@@ -110,7 +104,7 @@ bin/gotestsum-${GOTESTSUM_VERSION}:
 	@mkdir -p bin
 	curl -L https://github.com/gotestyourself/gotestsum/releases/download/v${GOTESTSUM_VERSION}/gotestsum_${GOTESTSUM_VERSION}_${OS}_amd64.tar.gz | tar -zOxf - gotestsum > ./bin/gotestsum-${GOTESTSUM_VERSION} && chmod +x ./bin/gotestsum-${GOTESTSUM_VERSION}
 
-TEST_PKGS ?= ./pkg/... ./internal/... ./commands/... ./cmd/...
+TEST_PKGS ?= ./internal/... ./cmd/...
 .PHONY: test
 # NOTE: some tests require uncustomized environment variables for VISUAL, EDITOR, and PAGER to test
 # certain behaviors related to glab output preferences. Also, the CI_PROJECT_PATH environment variable
@@ -126,28 +120,29 @@ test: EDITOR=
 test: PAGER=
 test: export CI_PROJECT_PATH=$(shell git remote get-url origin)
 test: bin/gotestsum ## Run tests
-	$(GOTEST) --jsonfile test-output.log --no-summary=skipped --junitfile ./coverage.xml --format ${TEST_FORMAT} -- -coverprofile=./coverage.txt -covermode=atomic $(filter-out -v,${GOARGS}) $(if ${TEST_PKGS},${TEST_PKGS},./...)
+	$(GOTEST) --no-summary=skipped --junitfile ./coverage.xml --format ${TEST_FORMAT} -- -coverprofile=./coverage.txt -covermode=atomic $(filter-out -v,${GOARGS}) $(if ${TEST_PKGS},${TEST_PKGS},./...)
 
 .PHONY: test-race
+test-race: TEST_FORMAT ?= short
 test-race: SHELL = /bin/bash # set environment variables to ensure consistent test behavior
 test-race: VISUAL=
 test-race: EDITOR=
 test-race: PAGER=
 test-race: export CI_PROJECT_PATH=$(shell git remote get-url origin)
 test-race: bin/gotestsum ## Run tests with race detection
-	$(GOTEST) -- -race ./...
+	$(GOTEST) --no-summary=skipped --junitfile ./coverage.xml --format ${TEST_FORMAT} -- -coverprofile=./coverage.txt -covermode=atomic -race $(filter-out -v,${GOARGS}) $(if ${TEST_PKGS},${TEST_PKGS},./...)
 
 ifdef HASGOCILINT
 bin/golangci-lint:
 	@echo "Skip this"
 else
-bin/golangci-lint: bin/golangci-lint-${GOLANGCI_VERSION}
-	@ln -sf golangci-lint-${GOLANGCI_VERSION} bin/golangci-lint
+bin/golangci-lint: bin/golangci-lint-${GOLANGCI_LINT_VERSION}
+	@ln -sf golangci-lint-${GOLANGCI_LINT_VERSION} bin/golangci-lint
 endif
 
-bin/golangci-lint-${GOLANGCI_VERSION}:
+bin/golangci-lint-${GOLANGCI_LINT_VERSION}:
 	@mkdir -p bin
-	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ./bin v${GOLANGCI_VERSION}
+	curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | bash -s -- -b ./bin v${GOLANGCI_LINT_VERSION}
 	@mv bin/golangci-lint $@
 
 .PHONY: coverage
@@ -163,6 +158,10 @@ fix: bin/golangci-lint ## Fix lint violations
 	$(GOLINT) run --fix
 	gofmt -s -w .
 	goimports -w .
+
+.PHONY: generate
+generate: ## Run go generate
+	go generate ./...
 
 .PHONY: list-todo
 list-todo: ## Detect FIXME, TODO and other comment keywords

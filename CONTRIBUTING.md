@@ -2,7 +2,7 @@
 
 ## Developer Certificate of Origin + License
 
-Contributions to this repository are subject to the [Developer Certificate of Origin](https://docs.gitlab.com/ee/legal/developer_certificate_of_origin.html#developer-certificate-of-origin-version-11).
+Contributions to this repository are subject to the [Developer Certificate of Origin](https://docs.gitlab.com/legal/developer_certificate_of_origin/#developer-certificate-of-origin-version-11).
 
 All Documentation content that resides under the [docs/ directory](/docs) of this
 repository is licensed under Creative Commons:
@@ -58,6 +58,22 @@ If your merge request is trivial (fixing typos, fixing a bug with 20 lines of co
 
 If your merge request is large, create an issue first. See [Reporting Issues](#reporting-issues) and [Proposing Features](#proposing-features). In the issue, the project maintainers can help you scope the work and make you more efficient.
 
+### Developing with Workspaces
+
+[GitLab Workspaces](https://docs.gitlab.com/user/workspace/) are fully enabled for the CLI project,
+providing a complete development environment in your browser.
+
+Benefits of using Workspaces:
+
+- Zero setup: No requirement to install Go, dependencies, or clone the repository locally.
+- Pre-configured environment: All development tools and dependencies are ready to use.
+- Immediate development: Start coding, running tests, or making edits right away.
+- New contributor onboarding: A great way for new contributors to start without local machine setup.
+- MR-based development: Open a Workspace directly from a merge request for testing and reviews.
+- No context switching: Make changes during code reviews without switching to your local machine.
+
+For more information see, [Creating a workspace](#creating-a-workspace).
+
 ### Building the project
 
 Prerequisites:
@@ -81,7 +97,7 @@ Integration tests use the `_Integration` test suffix and use the `_integration_t
 `GITLAB_TEST_HOST` is set to `https://gitlab.com` in CI.
 
 `GITLAB_TOKEN` must be a
-[personal access token](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) and requires the `api` scope.
+[personal access token](https://docs.gitlab.com/user/profile/personal_access_tokens/) and requires the `api` scope.
 To ensure the `glab duo` feature is functioning correctly, the token's user must have a GitLab Duo seat.
 
 ### Proposing Features
@@ -104,7 +120,7 @@ expected behavior as a result:
 
 - `create` - Used when creating a singular object. For example, `glab mr create`
   creates a new merge request.
-- `list` - Used by commands that output more than one object at a time. For example, 
+- `list` - Used by commands that output more than one object at a time. For example,
   `glab ci list` returns a list of all running pipelines.
 - `get` - Used by commands that output a singular object at a time. For example,
   `glab ci get --pipeline-id 1` returns the pipeline with the specified ID.
@@ -116,6 +132,18 @@ expected behavior as a result:
 Features generally have some or all of these commands. However, some features do not
 map well to the listed commands. In situations like these, it's okay to create or
 use separate verbs that make the most sense for the feature.
+
+#### Command Structure
+
+Commands in this repository follow the
+[OpenShift guidelines](https://github.com/openshift/origin/blob/master/docs/cli_hacking_guide.adoc)
+with the following differences:
+
+- `xxxOptions` structs are private. No need to export them.
+- `xxxOptions` structs are called just `options` to avoid repeating the package name.
+- Methods and fields on `options` are not exported.
+- Only implement the necessary methods out of `complete`, `validate` and `run`.
+- Options struct constructor is optional and should be named `newOptions` - unexported and does not repeat the package name.
 
 #### Precedent
 
@@ -262,3 +290,39 @@ A --yes--> C
 C{Is MR set to be squashed?} --no--> D[Every commit must be valid]
 C --yes--> E[MR title must be valid]
 ```
+
+### Creating a Workspace
+
+To create a workspace:
+
+1. Go to the CLI project or any merge request.
+1. In the upper-right corner, select **Code**.
+1. Select **Open in Workspace**.
+1. Complete the form. The form is pre-filled with cluster agent configuration, project reference,
+   and Devfile.
+1. Select **Create workspace**.
+
+Wait until the workspace status is **Running**, then select **Open workspace** to launch your
+development environment.
+
+After your workspace is running, you can start developing:
+
+```bash
+# Build the CLI binary
+make
+
+# Run the CLI
+./bin/glab
+
+# Run unit tests
+make test
+
+# Format and lint code
+make lint
+```
+
+For workspace-specific issues:
+
+- See the [GitLab Workspaces documentation](https://docs.gitlab.com/user/workspace/).
+- Reach out in the Slack `#f_workspaces` channel.
+- Create an issue in the [Workspace User Feedback Epic](https://gitlab.com/groups/gitlab-org/-/epics/12601).

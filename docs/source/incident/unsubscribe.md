@@ -25,10 +25,10 @@ unsub
 
 ## Examples
 
-```plaintext
-glab incident unsubscribe 123
-glab incident unsub 123
-glab incident unsubscribe https://gitlab.com/OWNER/REPO/-/issues/incident/123
+```console
+$ glab incident unsubscribe 123
+$ glab incident unsub 123
+$ glab incident unsubscribe https://gitlab.com/OWNER/REPO/-/issues/incident/123
 
 ```
 

@@ -5,9 +5,10 @@ import (
 	"fmt"
 	"testing"
 
-	"gitlab.com/gitlab-org/cli/api"
-	"gitlab.com/gitlab-org/cli/pkg/git"
-	"gitlab.com/gitlab-org/cli/pkg/prompt"
+	"gitlab.com/gitlab-org/cli/internal/api"
+	"gitlab.com/gitlab-org/cli/internal/git"
+	"gitlab.com/gitlab-org/cli/internal/glinstance"
+	"gitlab.com/gitlab-org/cli/internal/prompt"
 
 	"github.com/hashicorp/go-multierror"
 	"github.com/stretchr/testify/assert"
@@ -109,45 +110,8 @@ func Test_ResolveRemotesToRepos(t *testing.T) {
 
 	// Test the normal and most expected usage
 	t.Run("simple", func(t *testing.T) {
-		r, err := ResolveRemotesToRepos(rem.remotes, rem.apiClient, "")
+		r, err := ResolveRemotesToRepos(rem.remotes, rem.apiClient, glinstance.DefaultHostname)
 		assert.Nil(t, err)
-
-		assert.Equal(t, rem.apiClient, r.apiClient)
-
-		assert.Len(t, r.remotes, 1)
-
-		for i := range r.remotes {
-			assert.Equal(t, r.remotes[i].Name, rem.remotes[i].Name)
-			assert.Equal(t, r.remotes[i].Repo.FullName(), rem.remotes[i].Repo.FullName())
-			assert.Equal(t, r.remotes[i].Repo.RepoHost(), rem.remotes[i].Repo.RepoHost())
-		}
-	})
-
-	// Test the usage of baseOverride
-	t.Run("baseOverride", func(t *testing.T) {
-		expectedBaseOverride := NewWithHost("profclems", "glab", "gitlab.com")
-
-		r, err := ResolveRemotesToRepos(rem.remotes, rem.apiClient, "gitlab.com/profclems/glab")
-		assert.Nil(t, err)
-
-		assert.Equal(t, expectedBaseOverride.FullName(), r.baseOverride.FullName())
-		assert.Equal(t, expectedBaseOverride.RepoHost(), r.baseOverride.RepoHost())
-
-		assert.Equal(t, rem.apiClient, r.apiClient)
-
-		assert.Len(t, r.remotes, 1)
-
-		for i := range r.remotes {
-			assert.Equal(t, r.remotes[i].Name, rem.remotes[i].Name)
-			assert.Equal(t, r.remotes[i].Repo.FullName(), rem.remotes[i].Repo.FullName())
-			assert.Equal(t, r.remotes[i].Repo.RepoHost(), rem.remotes[i].Repo.RepoHost())
-		}
-	})
-
-	// Test the usage of baseOverride when it is passed an invalid value
-	t.Run("baseOverrideFail", func(t *testing.T) {
-		r, err := ResolveRemotesToRepos(rem.remotes, rem.apiClient, "badValue")
-		assert.EqualError(t, err, `expected the "[HOST/]OWNER/[NAMESPACE/]REPO" format, got "badValue"`)
 
 		assert.Equal(t, rem.apiClient, r.apiClient)
 
@@ -175,7 +139,7 @@ func Test_resolveNetwork(t *testing.T) {
 	}
 
 	// Override api.GetProject to not use the network
-	mockAPIGetProject := func(_ *gitlab.Client, ProjectID interface{}) (*gitlab.Project, error) {
+	mockAPIGetProject := func(_ *gitlab.Client, ProjectID any) (*gitlab.Project, error) {
 		proj := &gitlab.Project{
 			PathWithNamespace: fmt.Sprint(ProjectID),
 		}
@@ -201,7 +165,7 @@ func Test_resolveNetwork(t *testing.T) {
 		// Make our own copy of rem we can modify
 		rem := *rem
 
-		api.GetProject = func(_ *gitlab.Client, ProjectID interface{}) (*gitlab.Project, error) {
+		api.GetProject = func(_ *gitlab.Client, ProjectID any) (*gitlab.Project, error) {
 			return nil, assert.AnError
 		}
 
@@ -218,7 +182,7 @@ func Test_resolveNetwork(t *testing.T) {
 
 		api.GetProject = mockAPIGetProject
 
-		for i := 0; i < maxRemotesForLookup; i++ {
+		for i := range maxRemotesForLookup {
 			rem.remotes = append(rem.remotes, rem.remotes[i])
 		}
 		// Make sure we have at least one more remote than the limit set from maxRemotesForLookup
@@ -258,7 +222,7 @@ func Test_BaseRepo(t *testing.T) {
 		return *rem
 	}
 
-	mockGitlabProject := func(i interface{}) gitlab.Project {
+	mockGitlabProject := func(i any) gitlab.Project {
 		p := &gitlab.Project{
 			PathWithNamespace: fmt.Sprint(i),
 			HTTPURLToRepo:     fmt.Sprintf("https://gitlab.com/%s", i),
@@ -271,21 +235,10 @@ func Test_BaseRepo(t *testing.T) {
 		return nil
 	}
 
-	api.GetProject = func(_ *gitlab.Client, projectID interface{}) (*gitlab.Project, error) {
+	api.GetProject = func(_ *gitlab.Client, projectID any) (*gitlab.Project, error) {
 		p := mockGitlabProject(projectID)
 		return &p, nil
 	}
-
-	t.Run("baseOverride", func(t *testing.T) {
-		localRem := rem()
-		localRem.baseOverride = NewWithHost("profclems", "glab", "gitlab.com")
-
-		got, err := localRem.BaseRepo(false)
-		assert.NoError(t, err)
-
-		assert.Equal(t, localRem.baseOverride.FullName(), got.FullName())
-		assert.Equal(t, localRem.baseOverride.RepoHost(), got.RepoHost())
-	})
 
 	t.Run("Resolved->base", func(t *testing.T) {
 		localRem := rem()
@@ -568,7 +521,7 @@ func Test_BaseRepo(t *testing.T) {
 	})
 
 	t.Run("Consult the network, all calls fail", func(t *testing.T) {
-		api.GetProject = func(_ *gitlab.Client, projectID interface{}) (*gitlab.Project, error) {
+		api.GetProject = func(_ *gitlab.Client, projectID any) (*gitlab.Project, error) {
 			return nil, assert.AnError
 		}
 		localRem := rem()
@@ -589,7 +542,7 @@ func Test_BaseRepo(t *testing.T) {
 	})
 
 	t.Run("Consult the network, some, but not all, calls fail", func(t *testing.T) {
-		api.GetProject = func(_ *gitlab.Client, projectID interface{}) (*gitlab.Project, error) {
+		api.GetProject = func(_ *gitlab.Client, projectID any) (*gitlab.Project, error) {
 			if projectID == "profclems/glab" {
 				return &gitlab.Project{
 					ID:                1,
@@ -639,7 +592,7 @@ func Test_HeadRepo(t *testing.T) {
 		return *rem
 	}
 
-	mockGitlabProject := func(i interface{}) gitlab.Project {
+	mockGitlabProject := func(i any) gitlab.Project {
 		p := &gitlab.Project{
 			PathWithNamespace: fmt.Sprint(i),
 			HTTPURLToRepo:     fmt.Sprintf("https://gitlab.com/%s", i),
@@ -652,21 +605,10 @@ func Test_HeadRepo(t *testing.T) {
 		return nil
 	}
 
-	api.GetProject = func(_ *gitlab.Client, projectID interface{}) (*gitlab.Project, error) {
+	api.GetProject = func(_ *gitlab.Client, projectID any) (*gitlab.Project, error) {
 		p := mockGitlabProject(projectID)
 		return &p, nil
 	}
-
-	t.Run("baseOverride", func(t *testing.T) {
-		localRem := rem()
-		localRem.baseOverride = NewWithHost("profclems", "glab", "gitlab.com")
-
-		got, err := localRem.HeadRepo(false)
-		assert.NoError(t, err)
-
-		assert.Equal(t, localRem.baseOverride.FullName(), got.FullName())
-		assert.Equal(t, localRem.baseOverride.RepoHost(), got.RepoHost())
-	})
 
 	t.Run("Resolved->head", func(t *testing.T) {
 		localRem := rem()

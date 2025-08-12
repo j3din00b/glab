@@ -19,10 +19,10 @@ glab variable get <key> [flags]
 
 ## Examples
 
-```plaintext
-glab variable get VAR_KEY
-glab variable get -g GROUP VAR_KEY
-glab variable get -s SCOPE VAR_KEY
+```console
+$ glab variable get VAR_KEY
+$ glab variable get -g GROUP VAR_KEY
+$ glab variable get -s SCOPE VAR_KEY
 
 ```
 

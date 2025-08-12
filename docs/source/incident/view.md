@@ -25,12 +25,12 @@ show
 
 ## Examples
 
-```plaintext
-glab incident view 123
-glab incident show 123
-glab incident view --web 123
-glab incident view --comments 123
-glab incident view https://gitlab.com/NAMESPACE/REPO/-/issues/incident/123
+```console
+$ glab incident view 123
+$ glab incident show 123
+$ glab incident view --web 123
+$ glab incident view --comments 123
+$ glab incident view https://gitlab.com/NAMESPACE/REPO/-/issues/incident/123
 
 ```
 

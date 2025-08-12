@@ -2,21 +2,24 @@ package main
 
 import (
 	"bytes"
+	"errors"
 	"fmt"
 	"io"
 	"os"
 	"path/filepath"
 	"strings"
 
-	"gitlab.com/gitlab-org/cli/pkg/iostreams"
-
+	"github.com/spf13/cobra"
 	"github.com/spf13/cobra/doc"
 	"github.com/spf13/pflag"
-
-	"github.com/spf13/cobra"
-	"gitlab.com/gitlab-org/cli/commands"
-	"gitlab.com/gitlab-org/cli/commands/cmdutils"
+	gitlab "gitlab.com/gitlab-org/api/client-go"
+	"gitlab.com/gitlab-org/cli/internal/api"
+	"gitlab.com/gitlab-org/cli/internal/commands"
 	"gitlab.com/gitlab-org/cli/internal/config"
+	"gitlab.com/gitlab-org/cli/internal/glinstance"
+	"gitlab.com/gitlab-org/cli/internal/glrepo"
+	"gitlab.com/gitlab-org/cli/internal/iostreams"
+	"gitlab.com/gitlab-org/cli/internal/testing/cmdtest"
 )
 
 func main() {
@@ -41,8 +44,8 @@ func main() {
 		fatal(err)
 	}
 
-	ioStream, _, _, _ := iostreams.Test()
-	glabCli := commands.NewCmdRoot(&cmdutils.Factory{IO: ioStream}, "", "")
+	ioStream, _, _, _ := cmdtest.TestIOStreams()
+	glabCli := commands.NewCmdRoot(&factory{io: ioStream})
 	glabCli.DisableAutoGenTag = true
 	if *manpage {
 		if err := genManPage(glabCli, *path); err != nil {
@@ -224,10 +227,10 @@ func GenMarkdownCustom(cmd *cobra.Command, w io.Writer) error {
 
 	if len(cmd.Example) > 0 {
 		buf.WriteString("\n## Examples\n\n")
-		buf.WriteString(fmt.Sprintf("```plaintext\n%s\n```\n", cmd.Example))
+		buf.WriteString(fmt.Sprintf("```console\n%s\n```\n", cmd.Example))
 	}
 
-	if err := printOptions(buf, cmd, name); err != nil {
+	if err := printOptions(buf, cmd); err != nil {
 		return err
 	}
 
@@ -238,7 +241,7 @@ func GenMarkdownCustom(cmd *cobra.Command, w io.Writer) error {
 }
 
 // adapted from: github.com/spf13/cobra/blob/main/doc/md_docs.go
-func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
+func printOptions(buf *bytes.Buffer, cmd *cobra.Command) error {
 	flags := cmd.NonInheritedFlags()
 	flags.SetOutput(buf)
 	if flags.HasAvailableFlags() {
@@ -255,4 +258,48 @@ func printOptions(buf *bytes.Buffer, cmd *cobra.Command, name string) error {
 		buf.WriteString("```\n")
 	}
 	return nil
+}
+
+type factory struct {
+	io *iostreams.IOStreams
+}
+
+func (f *factory) RepoOverride(repo string) error {
+	return nil
+}
+
+func (f *factory) ApiClient(repoHost string, cfg config.Config) (*api.Client, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (f *factory) HttpClient() (*gitlab.Client, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (f *factory) BaseRepo() (glrepo.Interface, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (f *factory) Remotes() (glrepo.Remotes, error) {
+	return nil, errors.New("not implemented")
+}
+
+func (f *factory) Config() config.Config {
+	return nil
+}
+
+func (f *factory) Branch() (string, error) {
+	return "", errors.New("not implemented")
+}
+
+func (f *factory) IO() *iostreams.IOStreams {
+	return f.io
+}
+
+func (f *factory) DefaultHostname() string {
+	return glinstance.DefaultHostname
+}
+
+func (f *factory) BuildInfo() api.BuildInfo {
+	return api.BuildInfo{}
 }

@@ -25,11 +25,11 @@ ls
 
 ## Examples
 
-```plaintext
-glab issue list --all
-glab issue ls --all
-glab issue list --assignee=@me
-glab issue list --milestone release-2.0.0 --opened
+```console
+$ glab issue list --all
+$ glab issue ls --all
+$ glab issue list --assignee=@me
+$ glab issue list --milestone release-2.0.0 --opened
 
 ```
 
@@ -41,14 +41,15 @@ glab issue list --milestone release-2.0.0 --opened
       --author string          Filter issue by author <username>.
   -c, --closed                 Get only closed issues.
   -C, --confidential           Filter by confidential issues.
+  -e, --epic int               List issues belonging to a given epic (requires --group, no pagination support).
   -g, --group string           Select a group or subgroup. Ignored if a repo argument is set.
       --in string              search in: title, description. (default "title,description")
   -t, --issue-type string      Filter issue by its type. Options: issue, incident, test_case.
   -i, --iteration int          Filter issue by iteration <id>.
   -l, --label strings          Filter issue by label <name>.
   -m, --milestone string       Filter issue by milestone <id>.
-      --not-assignee strings   Filter issue by not being assigneed to <username>.
-      --not-author strings     Filter by not being by author(s) <username>.
+      --not-assignee string    Filter issue by not being assigned to <username>.
+      --not-author string      Filter issue by not being by author(s) <username>.
       --not-label strings      Filter issue by lack of label <name>.
   -O, --output string          Options: 'text' or 'json'. (default "text")
   -F, --output-format string   Options: 'details', 'ids', 'urls'. (default "details")

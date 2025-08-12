@@ -19,7 +19,7 @@ Save your current progress with a diff on the stack.
 
 This feature is experimental. It might be broken or removed without any prior notice.
 Read more about what experimental features mean at
-<https://docs.gitlab.com/ee/policy/experiment-beta-support.html>
+<https://docs.gitlab.com/policy/development_stages_support/>
 
 Use experimental features at your own risk.
 
@@ -29,10 +29,10 @@ glab stack save [flags]
 
 ## Examples
 
-```plaintext
-glab stack save added_file
-glab stack save . -m "added a function"
-glab stack save -m "added a function"
+```console
+$ glab stack save added_file
+$ glab stack save . -m "added a function"
+$ glab stack save -m "added a function"
 ```
 
 ## Options

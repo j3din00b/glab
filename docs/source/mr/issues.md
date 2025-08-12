@@ -25,7 +25,8 @@ issue
 
 ## Examples
 
-```plaintext
+```console
+# List issues for merge request 46
 $ glab mr issues 46
 $ glab mr issues branch
 

@@ -25,10 +25,11 @@ users
 
 ## Examples
 
-```plaintext
+```console
+# List contributors for the current repository
 $ glab repo contributors
 
-# Supports overriding the repository.
+# List contributors for a specific repository
 $ glab repo contributors -R gitlab-com/www-gitlab-com
 
 ```

@@ -23,13 +23,13 @@ glab repo view [repository] [flags]
 
 ## Examples
 
-```plaintext
+```console
 # View project information for the current directory.
 # Must be a Git repository.
 $ glab repo view
 
 # View project information of specified name.
-$ glab repo view my-project
+# glab repo view my-project
 $ glab repo view user/repo
 $ glab repo view group/namespace/repo
 

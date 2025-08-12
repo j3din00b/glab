@@ -1,3 +1,11 @@
+glab (1.62.0-1kaisen) kaisen-packages; urgency=medium
+
+  * Import the 1.62.0 release
+  * Update the quilt patch named harcoded-version-number.patch
+  * Add the quilt patch named build-without-git.patch
+
+ -- Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>  Sat, 09 Aug 2025 16:57:06 +0200
+
 glab (1.51.0-1kaisen) kaisen-packages; urgency=medium
 
   * Import the 1.51.0 release

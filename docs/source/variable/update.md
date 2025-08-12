@@ -19,27 +19,28 @@ glab variable update <key> <value> [flags]
 
 ## Examples
 
-```plaintext
-glab variable update WITH_ARG "some value"
-glab variable update FROM_FLAG -v "some value"
-glab variable update FROM_ENV_WITH_ARG "${ENV_VAR}"
-glab variable update FROM_ENV_WITH_FLAG -v"${ENV_VAR}"
-glab variable update FROM_FILE < secret.txt
-cat file.txt | glab variable update SERVER_TOKEN
-cat token.txt | glab variable update GROUP_TOKEN -g mygroup --scope=prod
+```console
+$ glab variable update WITH_ARG "some value"
+$ glab variable update FROM_FLAG -v "some value"
+$ glab variable update FROM_ENV_WITH_ARG "${ENV_VAR}"
+$ glab variable update FROM_ENV_WITH_FLAG -v"${ENV_VAR}"
+$ glab variable update FROM_FILE < secret.txt
+$ cat file.txt | glab variable update SERVER_TOKEN
+$ cat token.txt | glab variable update GROUP_TOKEN -g mygroup --scope=prod
 
 ```
 
 ## Options
 
 ```plaintext
-  -g, --group string   Set variable for a group.
-  -m, --masked         Whether the variable is masked.
-  -p, --protected      Whether the variable is protected.
-  -r, --raw            Whether the variable is treated as a raw string.
-  -s, --scope string   The environment_scope of the variable. Values: all (*), or specific environments. (default "*")
-  -t, --type string    The type of a variable: env_var, file. (default "env_var")
-  -v, --value string   The value of a variable.
+  -d, --description string   Set description of a variable.
+  -g, --group string         Set variable for a group.
+  -m, --masked               Whether the variable is masked.
+  -p, --protected            Whether the variable is protected.
+  -r, --raw                  Whether the variable is treated as a raw string.
+  -s, --scope string         The environment_scope of the variable. Values: all (*), or specific environments. (default "*")
+  -t, --type string          The type of a variable: env_var, file. (default "env_var")
+  -v, --value string         The value of a variable.
 ```
 
 ## Options inherited from parent commands

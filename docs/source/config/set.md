@@ -25,12 +25,10 @@ glab config set <key> <value> [flags]
 
 ## Examples
 
-```plaintext
-
-  glab config set editor vim
-  glab config set token xxxxx -h gitlab.com
-  glab config set check_update false --global
-
+```console
+- glab config set editor vim
+- glab config set token xxxxx -h gitlab.com
+- glab config set check_update false --global
 ```
 
 ## Options

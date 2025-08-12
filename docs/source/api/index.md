@@ -19,8 +19,8 @@ Makes an authenticated HTTP request to the GitLab API, and prints the response.
 The endpoint argument should either be a path of a GitLab API v4 endpoint, or
 "graphql" to access the GitLab GraphQL API.
 
-- [GitLab REST API documentation](https://docs.gitlab.com/ee/api/index.html)
-- [GitLab GraphQL documentation](https://docs.gitlab.com/ee/api/graphql/)
+- [GitLab REST API documentation](https://docs.gitlab.com/api/)
+- [GitLab GraphQL documentation](https://docs.gitlab.com/api/graphql/)
 
 If the current directory is a Git directory, uses the GitLab authenticated host in the current
 directory. Otherwise, `gitlab.com` will be used.
@@ -72,12 +72,14 @@ glab api <endpoint> [flags]
 
 ## Examples
 
-```plaintext
-$ glab api projects/:fullpath/releases
+```console
+- glab api projects/:fullpath/releases
 
-$ glab api projects/gitlab-com%2Fwww-gitlab-com/issues
+- glab api projects/gitlab-com%2Fwww-gitlab-com/issues
 
-$ glab api issues --paginate
+- glab api issues --paginate
+
+$ glab api graphql -f query="query { currentUser { username } }"
 
 $ glab api graphql -f query='
   query {

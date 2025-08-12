@@ -25,7 +25,8 @@ accept
 
 ## Examples
 
-```plaintext
+```console
+# Merge a merge request
 $ glab mr merge 235
 $ glab mr accept 235
 

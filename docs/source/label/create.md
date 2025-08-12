@@ -25,10 +25,10 @@ new
 
 ## Examples
 
-```plaintext
-glab label create
-glab label new
-glab label create -R owner/repo
+```console
+$ glab label create
+$ glab label new
+$ glab label create -R owner/repo
 
 ```
 

@@ -25,12 +25,12 @@ new
 
 ## Examples
 
-```plaintext
-glab mr new
-glab mr create -a username -t "fix annoying bug"
-glab mr create -f --draft --label RFC
-glab mr create --fill --web
-glab mr create --fill --fill-commit-body --yes
+```console
+$ glab mr new
+$ glab mr create -a username -t "fix annoying bug"
+$ glab mr create -f --draft --label RFC
+$ glab mr create --fill --web
+$ glab mr create --fill --fill-commit-body --yes
 
 ```
 

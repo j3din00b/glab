@@ -25,8 +25,8 @@ ls
 
 ## Examples
 
-```plaintext
-glab repo list
+```console
+$ glab repo list
 
 ```
 
@@ -34,7 +34,7 @@ glab repo list
 
 ```plaintext
   -a, --all                 List all projects on the instance.
-      --archived            Limit by archived status. Used with the '--group' flag.
+      --archived            Limit by archived status. Use 'false' to exclude archived repositories. Used with the '--group' flag.
   -g, --group string        Return repositories in only the given group.
   -G, --include-subgroups   Include projects in subgroups of this group. Default is false. Used with the '--group' flag.
       --member              List only projects of which you are a member.
@@ -45,6 +45,7 @@ glab repo list
   -P, --per-page int        Number of items to list per page. (default 30)
   -s, --sort string         Return repositories sorted in asc or desc order.
       --starred             List only starred projects.
+  -u, --user string         List user projects.
 ```
 
 ## Options inherited from parent commands

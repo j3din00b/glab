@@ -60,6 +60,15 @@ func rootConfig() *yaml.Node {
 						Value: "true",
 					},
 					{
+						HeadComment: "# Last update check timestamp, used for checking when the last update check was performed.",
+						Kind:        yaml.ScalarNode,
+						Value:       "last_update_check_timestamp",
+					},
+					{
+						Kind:  yaml.ScalarNode,
+						Value: "",
+					},
+					{
 						HeadComment: "# Whether or not to display hyperlink escape characters when listing items like issues or merge requests. Set to TRUE to display hyperlinks in TTYs only. Force hyperlinks by setting FORCE_HYPERLINKS=1 as an environment variable.",
 						Kind:        yaml.ScalarNode,
 						Value:       "display_hyperlinks",
@@ -85,6 +94,15 @@ func rootConfig() *yaml.Node {
 					{
 						Kind:  yaml.ScalarNode,
 						Value: "false",
+					},
+					{
+						HeadComment: "# Set to false (0) to disable sending usage data to your GitLab instance or true (1) to enable.\n# See https://docs.gitlab.com/administration/settings/usage_statistics/\n# for more information",
+						Kind:        yaml.ScalarNode,
+						Value:       "telemetry",
+					},
+					{
+						Kind:  yaml.ScalarNode,
+						Value: "true",
 					},
 					{
 						HeadComment: "# Configuration specific for GitLab instances.",
@@ -120,13 +138,35 @@ func rootConfig() *yaml.Node {
 										Value: "gitlab.com",
 									},
 									{
-										HeadComment: "# Your GitLab access token. To get one, read https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html",
+										HeadComment: "# Your GitLab access token. To get one, read https://docs.gitlab.com/user/profile/personal_access_tokens/",
 										Kind:        yaml.ScalarNode,
 										Value:       "token",
 									},
 									{
 										Kind:  yaml.ScalarNode,
 										Value: "",
+									},
+									{
+										HeadComment: "# The domains of associated container registries. These are used to configure the\n# Docker credential helper.",
+										Kind:        yaml.ScalarNode,
+										Value:       "container_registry_domains",
+									},
+									{
+										Kind: yaml.SequenceNode,
+										Content: []*yaml.Node{
+											{
+												Kind:  yaml.ScalarNode,
+												Value: "gitlab.com",
+											},
+											{
+												Kind:  yaml.ScalarNode,
+												Value: "gitlab.com:443",
+											},
+											{
+												Kind:  yaml.ScalarNode,
+												Value: "registry.gitlab.com",
+											},
+										},
 									},
 								},
 							},

@@ -18,7 +18,7 @@ Authenticate with a GitLab instance.
 Authenticate with a GitLab instance.
 You can pass in a token on standard input by using `--stdin`.
 The minimum required scopes for the token are: `api`, `write_repository`.
-Configuration and credentials are stored in the global configuration file (Default: `~/.config/glab-cli/config.yml`)
+Configuration and credentials are stored in the global configuration file (default `~/.config/glab-cli/config.yml`)
 
 ```plaintext
 glab auth login [flags]
@@ -26,14 +26,14 @@ glab auth login [flags]
 
 ## Examples
 
-```plaintext
+```console
 # Start interactive setup
 $ glab auth login
 
 # Authenticate against `gitlab.com` by reading the token from a file
 $ glab auth login --stdin < myaccesstoken.txt
 
-# Authenticate with a self-hosted GitLab instance
+# Authenticate with GitLab Self-Managed or GitLab Dedicated
 $ glab auth login --hostname salsa.debian.org
 
 # Non-interactive setup
@@ -41,8 +41,9 @@ $ glab auth login --hostname gitlab.example.org --token glpat-xxx --api-host git
 
 # Non-interactive setup reading token from a file
 $ glab auth login --hostname gitlab.example.org --api-host gitlab.example.org:3443 --api-protocol https --git-protocol ssh  --stdin < myaccesstoken.txt
-# non-interactive job token setup
-$ glab auth login --hostname gitlab.example.org --job-token $CI_JOB_TOKEN
+
+# Non-interactive CI/CD setup
+$ glab auth login --hostname $CI_SERVER_HOST --job-token $CI_JOB_TOKEN
 
 ```
 

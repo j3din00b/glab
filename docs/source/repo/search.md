@@ -26,17 +26,18 @@ lookup
 
 ## Examples
 
-```plaintext
-glab project search title
-glab repo search title
-glab project find title
-glab project lookup title
+```console
+$ glab project search -s "title"
+$ glab repo search -s "title"
+$ glab project find -s "title"
+$ glab project lookup -s "title"
 
 ```
 
 ## Options
 
 ```plaintext
+  -F, --output string   Format output as: text, json. (default "text")
   -p, --page int        Page number. (default 1)
   -P, --per-page int    Number of items to list per page. (default 20)
   -s, --search string   A string contained in the project name.

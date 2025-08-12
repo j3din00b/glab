@@ -25,16 +25,16 @@ stats
 
 ## Examples
 
-```plaintext
-glab ci get
-glab ci -R some/project -p 12345
+```console
+$ glab ci get
+$ glab ci -R some/project -p 12345
 
 ```
 
 ## Options
 
 ```plaintext
-  -b, --branch string      Check pipeline status for a branch. (Default: current branch)
+  -b, --branch string      Check pipeline status for a branch. (default current branch)
   -F, --output string      Format output. Options: text, json. (default "text")
   -p, --pipeline-id int    Provide pipeline ID.
   -d, --with-job-details   Show extended job information.

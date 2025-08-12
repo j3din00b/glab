@@ -1,16 +1,14 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
 	"net"
 	"testing"
 
-	"gitlab.com/gitlab-org/cli/pkg/iostreams"
-
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"gitlab.com/gitlab-org/cli/commands/cmdutils"
+	"gitlab.com/gitlab-org/cli/internal/cmdutils"
+	"gitlab.com/gitlab-org/cli/internal/testing/cmdtest"
 	"go.uber.org/goleak"
 )
 
@@ -34,7 +32,7 @@ func Test_printError(t *testing.T) {
 				cmd:   cmd,
 				debug: false,
 			},
-			wantOut: "the app exploded\n",
+			wantOut: "ERROR: the app exploded\n",
 		},
 		{
 			name: "DNS error",
@@ -46,7 +44,7 @@ func Test_printError(t *testing.T) {
 				debug: false,
 			},
 			wantOut: `x error connecting to https://gitlab.com/api/v4
-• Check your internet connection and status.gitlab.com. If on a self-managed instance, run 'sudo gitlab-ctl status' on your server.
+• Check your internet connection and status.gitlab.com. If on GitLab Self-Managed, run 'sudo gitlab-ctl status' on your server.
 `,
 		},
 		{
@@ -61,7 +59,7 @@ func Test_printError(t *testing.T) {
 
 			wantOut: `x error connecting to https://gitlab.com/api/v4
 x lookup https://gitlab.com/api/v4: 
-• Check your internet connection and status.gitlab.com. If on a self-managed instance, run 'sudo gitlab-ctl status' on your server.
+• Check your internet connection and status.gitlab.com. If on GitLab Self-Managed, run 'sudo gitlab-ctl status' on your server.
 `,
 		},
 		{
@@ -71,7 +69,7 @@ x lookup https://gitlab.com/api/v4:
 				cmd:   cmd,
 				debug: false,
 			},
-			wantOut: "unknown flag --foo\n\nUsage:\n\n",
+			wantOut: "ERROR: unknown flag --foo\nTry ' --help' for more information.",
 		},
 		{
 			name: "unknown Cobra command error",
@@ -80,16 +78,14 @@ x lookup https://gitlab.com/api/v4:
 				cmd:   cmd,
 				debug: false,
 			},
-			wantOut: "unknown command foo\n\nUsage:\n\n",
+			wantOut: "ERROR: unknown command foo\nTry ' --help' for more information.",
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			streams, _, _, _ := iostreams.Test()
-			out := &bytes.Buffer{}
-			streams.StdErr = out
-			printError(streams, tt.args.err, tt.args.cmd, tt.args.debug, false)
+			streams, _, _, out := cmdtest.TestIOStreams()
+			printError(streams, tt.args.err, tt.args.cmd, tt.args.debug)
 			if gotOut := out.String(); gotOut != tt.wantOut {
 				t.Errorf("printError() = %q, want %q", gotOut, tt.wantOut)
 			}
@@ -99,10 +95,12 @@ x lookup https://gitlab.com/api/v4:
 
 // Test started when the test binary is started
 // and calls the main function
-func TestGlab(t *testing.T) {
+func TestGlab(t *testing.T) { // nolint:unparam
 	main()
 }
 
 func TestMain(m *testing.M) {
-	goleak.VerifyTestMain(m)
+	goleak.VerifyTestMain(m,
+		goleak.IgnoreTopFunction("internal/poll.runtime_pollWait"), // HTTP keep-alive connections
+	)
 }

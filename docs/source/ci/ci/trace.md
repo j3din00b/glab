@@ -19,22 +19,22 @@ glab ci ci trace [<job-id>] [flags]
 
 ## Examples
 
-```plaintext
-$ glab ci trace
+```console
 # Interactively select a job to trace
+$ glab ci trace
 
-$ glab ci trace 224356863
 # Trace job with ID 224356863
+$ glab ci trace 224356863
 
-$ glab ci trace lint
 # Trace job with the name 'lint'
+$ glab ci trace lint
 
 ```
 
 ## Options
 
 ```plaintext
-  -b, --branch string     The branch to search for the job. Default: current branch.
+  -b, --branch string     The branch to search for the job. (default current branch)
   -p, --pipeline-id int   The pipeline ID to search for the job.
 ```
 

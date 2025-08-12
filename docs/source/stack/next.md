@@ -19,7 +19,7 @@ Moves to the next diff in the stack, and checks out that branch.
 
 This feature is experimental. It might be broken or removed without any prior notice.
 Read more about what experimental features mean at
-<https://docs.gitlab.com/ee/policy/experiment-beta-support.html>
+<https://docs.gitlab.com/policy/development_stages_support/>
 
 Use experimental features at your own risk.
 
@@ -29,8 +29,9 @@ glab stack next [flags]
 
 ## Examples
 
-```plaintext
-glab stack next
+```console
+$ glab stack next
+
 ```
 
 ## Options inherited from parent commands

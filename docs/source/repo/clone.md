@@ -23,18 +23,19 @@ Clone supports these shorthand references:
 - project ID
 
 ```plaintext
-glab repo clone <repo> [flags] [<dir>] [-- [<gitflags>...]]
+glab repo clone <repo> [flags] [<dir>] [-- <gitflags>...]
+glab repo clone -g <group> [flags] [<dir>] [-- <gitflags>...]
 ```
 
 ## Examples
 
-```plaintext
-$ glab repo clone profclems/glab
-
-$ glab repo clone https://gitlab.com/profclems/glab
+```console
+# Clones repository into current directory
+$ glab repo clone gitlab-org/cli
+$ glab repo clone https://gitlab.com/gitlab-org/cli
 
 # Clones repository into 'mydirectory'
-$ glab repo clone profclems/glab mydirectory
+$ glab repo clone gitlab-org/cli mydirectory
 
 # Clones repository 'glab' for current user
 $ glab repo clone glab
@@ -48,7 +49,7 @@ $ glab repo clone -g everyonecancontribute --paginate
 # Clones all non-archived repos in a group
 $ glab repo clone -g everyonecancontribute --archived=false --paginate
 
-# Clones from a self-hosted instance
+# Clones from a GitLab Self-Managed or GitLab Dedicated instance
 $ GITLAB_HOST=salsa.debian.org glab repo clone myrepo
 
 ```

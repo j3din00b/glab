@@ -1,1 +1,2 @@
-harcoded-version-number
+build-without-git.patch
+harcoded-version-number.patch

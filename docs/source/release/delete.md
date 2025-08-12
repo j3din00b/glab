@@ -25,9 +25,9 @@ glab release delete <tag> [flags]
 
 ## Examples
 
-```plaintext
+```console
 # Delete a release (with a confirmation prompt)
-$ glab release delete v1.1.0'
+$ glab release delete v1.1.0
 
 # Skip the confirmation prompt and force delete
 $ glab release delete v1.0.1 -y

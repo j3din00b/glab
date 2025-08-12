@@ -25,9 +25,9 @@ push
 
 ## Examples
 
-```plaintext
-glab job artifact main build
-glab job artifact main deploy --path="artifacts/"
+```console
+$ glab job artifact main build
+$ glab job artifact main deploy --path="artifacts/"
 
 ```
 

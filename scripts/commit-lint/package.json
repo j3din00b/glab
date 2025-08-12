@@ -6,10 +6,9 @@
   "license": "MIT",
   "type": "module",
   "dependencies": {
-    "@commitlint/config-conventional": "^19.6.0",
-    "@commitlint/format": "^19.5.0",
-    "@commitlint/lint": "^19.6.0",
-    "@commitlint/read": "^19.2.1",
-    "axios": "^1.7.9"
+    "@commitlint/config-conventional": "^19.8.0",
+    "@commitlint/format": "^19.8.1",
+    "@commitlint/lint": "^19.8.1",
+    "@commitlint/read": "^19.8.1"
   }
 }

@@ -1,0 +1,15 @@
+Author: Kevin Chevreuil - Kaisen <kaisen@kaisenlinux.org>
+
+--- glab-1.62.0.orig/Makefile
++++ glab-1.62.0/Makefile
+@@ -11,8 +11,8 @@ endif
+ TEST_FORMAT = short-verbose
+ endif
+ 
+-GLAB_VERSION ?= $(shell git describe --tags --abbrev=0 2>/dev/null || git rev-parse --short HEAD)
+-BUILD_COMMIT_SHA ?= $(shell git rev-parse --short HEAD)
++GLAB_VERSION ?= 1.62.0
++BUILD_COMMIT_SHA ?= 2025/08/09
+ 
+ ifndef CGO_CPPFLAGS
+     export CGO_CPPFLAGS := $(CPPFLAGS)

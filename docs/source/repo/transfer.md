@@ -19,8 +19,8 @@ glab repo transfer [repo] [flags]
 
 ## Examples
 
-```plaintext
-glab repo transfer profclems/glab --target-namespace notprofclems
+```console
+$ glab repo transfer profclems/glab --target-namespace notprofclems
 
 ```
 

@@ -19,9 +19,9 @@ glab issue update <id> [flags]
 
 ## Examples
 
-```plaintext
-glab issue update 42 --label ui,ux
-glab issue update 42 --unlabel working
+```console
+$ glab issue update 42 --label ui,ux
+$ glab issue update 42 --unlabel working
 
 ```
 
@@ -39,6 +39,7 @@ glab issue update 42 --unlabel working
       --unassign             Unassign all users.
   -u, --unlabel strings      Remove labels.
       --unlock-discussion    Unlock discussion on issue.
+  -w, --weight int           Set weight of the issue.
 ```
 
 ## Options inherited from parent commands

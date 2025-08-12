@@ -25,24 +25,24 @@ stats
 
 ## Examples
 
-```plaintext
-glab ci status --live
+```console
+$ glab ci status --live
 
 # A more compact view
-glab ci status --compact
+$ glab ci status --compact
 
 # Get the pipeline for the main branch
-glab ci status --branch=main
+$ glab ci status --branch=main
 
 # Get the pipeline for the current branch
-glab ci status
+$ glab ci status
 
 ```
 
 ## Options
 
 ```plaintext
-  -b, --branch string   Check pipeline status for a branch. Default: current branch.
+  -b, --branch string   Check pipeline status for a branch. (default current branch)
   -c, --compact         Show status in compact format.
   -l, --live            Show status in real time until the pipeline ends.
 ```

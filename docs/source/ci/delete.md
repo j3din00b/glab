@@ -19,13 +19,13 @@ glab ci delete <id> [flags]
 
 ## Examples
 
-```plaintext
-glab ci delete 34
-glab ci delete 12,34,2
-glab ci delete --source=api
-glab ci delete --status=failed
-glab ci delete --older-than 24h
-glab ci delete --older-than 24h --status=failed
+```console
+$ glab ci delete 34
+$ glab ci delete 12,34,2
+$ glab ci delete --source=api
+$ glab ci delete --status=failed
+$ glab ci delete --older-than 24h
+$ glab ci delete --older-than 24h --status=failed
 
 ```
 
